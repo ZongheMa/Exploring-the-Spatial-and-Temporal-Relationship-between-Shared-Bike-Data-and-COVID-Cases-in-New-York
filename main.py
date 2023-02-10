@@ -1,4 +1,4 @@
-from data_acquisition import *
+from data_clean import *
 
 
 url_nyc = 'https://s3.amazonaws.com/tripdata/index.html'
