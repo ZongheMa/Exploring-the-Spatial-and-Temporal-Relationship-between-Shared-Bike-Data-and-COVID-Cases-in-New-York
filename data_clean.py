@@ -2,29 +2,23 @@
 import numpy as np
 import glob
 import pandas as pd
-import os, sys
+import os
 import zipfile
 import geopandas as gpd
 from shapely.geometry import MultiPoint, Point
 import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
+from tqdm import tqdm
 
 
-'''# Covid-19 data from NYC Health
-original_covid_nyc = pd.read_csv('https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv')
-covid_nyc = pd.DataFrame(original_covid_nyc,
-                         columns=['date_of_interest', 'CASE_COUNT', 'HOSPITALIZED_COUNT', 'DEATH_COUNT',
-                                  'BX_CASE_COUNT', 'BX_DEATH_COUNT', 'Bk_CASE_COUNT', 'Bk_DEATH_COUNT', 'MN_CASE_COUNT',
-                                  'MN_DEATH_COUNT', 'QN_CASE_COUNT', 'QN_DEATH_COUNT','SI_CASE_COUNT', 'SI_DEATH_COUNT'])
-covid_nyc = covid_nyc.loc[(covid_nyc['date_of_interest'] >= '03/01/2020') & (covid_nyc['date_of_interest'] <= '12/31/2022')]
+# # Shared bike DataSets
+# url_nyc = 'https://s3.amazonaws.com/tripdata/index.html'
+# url_boston = 'https://divvy-tripdata.s3.amazonaws.com/index.html'
+# url_chicago = 'https://s3.amazonaws.com/hubway-data/index.html'
 
-print(original_covid_nyc.head())
-print(covid_nyc['CASE_COUNT'].sum())
-
-
-pd.plotting.scatter_matrix(covid_nyc, alpha=0.2, figsize=(6, 6), diagonal='kde')
-plt.show()'''
+# # NYC Covid DataSets
+# download_link('https://s3.amazonaws.com/tripdata/201306-citibike-tripdata.zip')
 
 
 def get_csv_paths(folder_path):
@@ -39,7 +33,7 @@ def get_csv_paths(folder_path):
 
 # Shared bike datasets
 def unzip_files(source_folder, target_folder):
-    for filename in os.listdir(source_folder):
+    for filename in tqdm(os.listdir(source_folder)):
         if filename.endswith('.zip'):
             file_path = os.path.join(source_folder, filename)
             with zipfile.ZipFile(file_path, 'r') as zip_ref:
@@ -59,7 +53,7 @@ def merge_csv(source_folder, target_folder):
         index=False)
 
 
-class NYUbike_Clean:
+class BikeDataClean:
     def __init__(self, csv):
         self.ori_csv = csv
 
@@ -75,7 +69,7 @@ class NYUbike_Clean:
             df.to_csv(self.ori_csv, index=False)
 
     def basic_csv(self):
-        df = pd.read_csv(self.ori_csv,low_memory=False)
+        df = pd.read_csv(self.ori_csv, low_memory=False)
 
         # filter out invalid data
         ori_len = len(df)
@@ -91,7 +85,7 @@ class NYUbike_Clean:
         # group and aggregate
         group_cols = ['starttime', 'start station id', 'start station name',
                       'start station latitude', 'start station longitude']
-        agg_dict = {'tripduration': ['count','sum', 'mean'], 'start station name': 'first'}
+        agg_dict = {'tripduration': ['count', 'sum', 'mean'], 'start station name': 'first'}
         grouped = df.groupby(group_cols).agg(agg_dict).reset_index()
         grouped.columns = ['_'.join(col).strip() for col in grouped.columns.values]
         grouped.rename(columns={'starttime_': 'starttime',
@@ -207,3 +201,49 @@ class NYUbike_Clean:
                   inplace=True)
 
         return t_df
+
+
+# # Unzip raw files
+# source_folder = '/Users/zonghe/Downloads/'
+# target_folder = '/Users/zonghe/Documents/Modules/Term2/CEGE0042_STDM/STDM/data/SharedBike/ori_bst'
+# unzip_files(source_folder, target_folder)
+
+# # Data cleaning
+# csv_files = get_csv_paths('data/SharedBike/ori_bst')
+# for i in tqdm(range(len(csv_files))):
+#     df = BikeDataClean(csv_files[i]).uniform() # uniform the column names of the csv files
+#     print(f'\nThe {i+1}/{len(csv_files)} file is being processed...\n')
+#     df = BikeDataClean(csv_files[i]).basic_csv() # basic cleaning
+#     # save as geojson
+#     df.to_csv('data/SharedBike/bst/' + 'cleaned-' + os.path.splitext(os.path.basename(csv_files[i]))[0] + '.csv', index=False)
+# print('BST shared bike data cleaning completed!')
+
+
+# # Covid-19 data from NYC Health(https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv)
+# df = pd.read_csv('https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv')
+# covid_nyc = pd.DataFrame(df,
+#                          columns=['date_of_interest', 'CASE_COUNT', 'HOSPITALIZED_COUNT', 'DEATH_COUNT',
+#                                   'BX_CASE_COUNT', 'BX_DEATH_COUNT', 'BK_CASE_COUNT', 'BK_DEATH_COUNT', 'MN_CASE_COUNT',
+#                                   'MN_DEATH_COUNT', 'QN_CASE_COUNT', 'QN_DEATH_COUNT', 'SI_CASE_COUNT',
+#                                   'SI_DEATH_COUNT'])
+# covid_nyc['date_of_interest'] = pd.to_datetime(covid_nyc['date_of_interest'], format='%m/%d/%Y').astype(str)
+# covid_nyc = covid_nyc.loc[covid_nyc['date_of_interest'] < '2023-02-01']
+# covid_nyc.rename(columns={'date_of_interest': 'date'}, inplace=True)
+#
+# db = pd.DataFrame(pd.date_range(start='2019-10-01', end='2020-02-28', freq='D').astype(str), columns=['date'])
+#
+# covid_nyc = pd.concat([db, covid_nyc], axis=0, join='outer', ignore_index=True).fillna(0)
+# covid_nyc.to_csv('data/Covid_cases/covid_nyc.csv', index=False)
+
+
+# # Covid cases data from City of BST(https://www.boston.gov/government/cabinets/boston-public-health-commission/covid-19-boston )
+# df = pd.read_csv('data/Covid_cases/Boston_COVID-19_NewCases.csv')
+# df = df.loc[:, ['Category1', 'Value']]
+# df.rename(columns={'Category1': 'date', 'Value': 'cases'}, inplace=True)
+# df['date'] = pd.to_datetime(df['date'], format='%m/%d/%Y').astype(str)
+# db = pd.DataFrame(pd.date_range(start='2019-10-01', end='2020-02-21', freq='D').astype(str), columns=['date'])
+# df = pd.concat([db, df], axis=0, join='outer', ignore_index=True).fillna(0)
+# df.index = pd.to_datetime(df['date'])
+# df.resample('D').mean().interpolate() # interpolate the missing values
+# df.to_csv('data/Covid_cases/covid_bst.csv', index=False)
+
