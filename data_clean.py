@@ -40,7 +40,8 @@ def unzip_files(source_folder, target_folder):
                 zip_ref.extractall(target_folder)
 
 
-def merge_csv(source_folder, target_folder):
+def merge_csv(source_folder, target_folder=None, file_format=None):
+
     all_files = glob.glob(source_folder + "/*.csv")
     list_ = []
     for file in all_files:
@@ -48,10 +49,15 @@ def merge_csv(source_folder, target_folder):
         list_.append(df)
 
     frame = pd.concat(list_, axis=0, ignore_index=True)
-    frame.to_csv(
-        target_folder + 'merged.csv',
-        index=False)
-
+    if file_format == None:
+        frame
+    elif file_format == 'csv':
+        frame.to_csv(
+            target_folder + 'merged.csv',
+            index=False)
+    else:
+        print('Please input the correct file format.')
+    return frame
 
 class BikeDataClean:
     def __init__(self, csv):
