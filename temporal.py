@@ -17,20 +17,25 @@ import subprocess
 import sys
 
 # change the output path
-sys.stdout = open('output/Running info of ESDA.txt', 'w')
+sys.stdout = open('output/temporal/NYC-Running info of ESDA.txt', 'w')
 
-# ESTDA part
-df = merge_csv('data/SharedBike/nyc')
+# temporal analysis part
+df = merge_csv('data/SharedBike/bst')
 # print(bike.iloc[0])
 # print(bike.head())
 # print(bike.describe())
+if 'BX_CASE_COUNT' in df.columns:
+    agg_func = {'start station id': 'count', 'trip count': 'sum', 'tripduration_sum(sec)': 'sum',
+                'tripduration_mean(sec)': 'sum', 'tripduration_sum(mins)': 'sum', 'tripduration_mean(mins)': 'sum',
+                'CASE_COUNT': 'sum', 'HOSPITALIZED_COUNT': 'sum', 'DEATH_COUNT': 'sum',
+                'BX_CASE_COUNT': 'sum', 'BX_DEATH_COUNT': 'sum', 'BK_CASE_COUNT': 'sum', 'BK_DEATH_COUNT': 'sum',
+                'MN_CASE_COUNT': 'sum', 'MN_DEATH_COUNT': 'sum', 'QN_CASE_COUNT': 'sum', 'QN_DEATH_COUNT': 'sum',
+                'SI_CASE_COUNT': 'sum', 'SI_DEATH_COUNT': 'sum'}
+else:
+    agg_func = {'start station id': 'count', 'trip count': 'sum', 'tripduration_sum(sec)': 'sum',
+                'tripduration_mean(sec)': 'sum', 'tripduration_sum(mins)': 'sum', 'tripduration_mean(mins)': 'sum',
+                'CASE_COUNT': 'sum'}
 
-agg_func = {'start station id': 'count', 'trip count': 'sum', 'tripduration_sum(sec)': 'sum',
-            'tripduration_mean(sec)': 'sum', 'tripduration_sum(mins)': 'sum', 'tripduration_mean(mins)': 'sum',
-            'CASE_COUNT': 'sum', 'HOSPITALIZED_COUNT': 'sum', 'DEATH_COUNT': 'sum',
-            'BX_CASE_COUNT': 'sum', 'BX_DEATH_COUNT': 'sum', 'BK_CASE_COUNT': 'sum', 'BK_DEATH_COUNT': 'sum',
-            'MN_CASE_COUNT': 'sum', 'MN_DEATH_COUNT': 'sum', 'QN_CASE_COUNT': 'sum', 'QN_DEATH_COUNT': 'sum',
-            'SI_CASE_COUNT': 'sum', 'SI_DEATH_COUNT': 'sum'}
 df_temporal = df.groupby('date').agg(agg_func)
 df_temporal.index = pd.to_datetime(df_temporal.index)
 print('\n{:=^60s}'.format('df_temporal'))
@@ -109,6 +114,7 @@ fig.savefig('output/Overall time series of dataset.png', dpi=300, bbox_inches='t
 # sm.graphics.tsa.plot_pacf(df_v, lags=10, ax=ax[1])
 # plt.show()'''
 
+'''
 plt.figure(figsize=(10, 5))
 sns.distplot(df_temporal, hist=True, kde=True, bins=30)
 plt.title('Histogram and Density Plot of the temporal dataset')
@@ -117,7 +123,7 @@ plt.ylabel('Density')
 plt.legend(['Histogram', 'Density'])
 plt.show()  # not sure what is the purpose of this plot
 fig.savefig('output/Histogram and Density Plot of the temporal dataset', dpi=300, bbox_inches='tight')
-
+'''
 # decomposition the time series
 
 

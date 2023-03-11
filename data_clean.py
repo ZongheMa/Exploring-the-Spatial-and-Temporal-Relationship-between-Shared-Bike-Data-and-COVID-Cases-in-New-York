@@ -246,9 +246,9 @@ df.resample('D').mean().interpolate()  # interpolate the missing values
 df.to_csv('data/Covid_cases/covid_bst.csv', index=False)
 '''
 
-'''  # Data cleaning
-csv_files = get_csv_paths('data/SharedBike/ori_nyc')
-covid = pd.read_csv('data/Covid_cases/covid_nyc.csv')
+'''# Data cleaning
+csv_files = get_csv_paths('data/SharedBike/ori_bst')
+covid = pd.read_csv('data/Covid_cases/covid_bst.csv')
 for i in tqdm(range(len(csv_files))):
     df = BikeDataClean(csv_files[i]).uniform()  # uniform the column names of the csv files
     df = BikeDataClean(csv_files[i]).basic_csv()  # basic cleaning
@@ -256,6 +256,6 @@ for i in tqdm(range(len(csv_files))):
     df.rename(columns={'starttime': 'date'}, inplace=True)
     df = pd.merge(df, covid, on='date', how='left')
 
-    df.to_csv('data/SharedBike/nyc/' + 'cleaned-' + os.path.splitext(os.path.basename(csv_files[i]))[0] + '.csv',
+    df.to_csv('data/SharedBike/bst/' + 'cleaned-' + os.path.splitext(os.path.basename(csv_files[i]))[0] + '.csv',
               index=False)
 print('NYC shared bike data cleaning completed!')'''
