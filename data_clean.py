@@ -1,4 +1,6 @@
 # coding=utf-8
+import io
+
 import numpy as np
 import glob
 import pandas as pd
@@ -6,10 +8,10 @@ import os
 import zipfile
 import geopandas as gpd
 from shapely.geometry import MultiPoint, Point
-import warnings
-
-warnings.simplefilter(action='ignore', category=FutureWarning)
 from tqdm import tqdm
+
+
+
 
 
 # # Shared bike DataSets
@@ -209,7 +211,7 @@ class BikeDataClean:
         return t_df
 
 
-# Data cleaning part
+'''# Data cleaning part
 
 # # Unzip raw files
 # source_folder = '/Users/zonghe/Downloads/'
@@ -256,4 +258,4 @@ for i in tqdm(range(len(csv_files))):
 
     df.to_csv('data/SharedBike/nyc/' + 'cleaned-' + os.path.splitext(os.path.basename(csv_files[i]))[0] + '.csv',
               index=False)
-print('NYC shared bike data cleaning completed!')
+print('NYC shared bike data cleaning completed!')'''
