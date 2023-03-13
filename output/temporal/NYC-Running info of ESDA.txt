@@ -58,8 +58,8 @@ Summary of the SARIMA model for tripduration_sum(mins):
 ==========================================================================================
 Dep. Variable:             tripduration_sum(mins)   No. Observations:                 1487
 Model:             SARIMAX(1, 1, 1)x(0, 0, 1, 12)   Log Likelihood              -18039.516
-Date:                            Sat, 11 Mar 2023   AIC                          36087.032
-Time:                                    19:23:43   BIC                          36108.209
+Date:                            Sun, 12 Mar 2023   AIC                          36087.032
+Time:                                    21:11:55   BIC                          36108.209
 Sample:                                         0   HQIC                         36094.929
                                            - 1487                                         
 Covariance Type:                              opg                                         
@@ -117,8 +117,8 @@ Summary of the SARIMA model for trip count:
 ==========================================================================================
 Dep. Variable:                         trip count   No. Observations:                 1487
 Model:             SARIMAX(1, 1, 1)x(0, 1, 1, 12)   Log Likelihood              -13086.403
-Date:                            Sat, 11 Mar 2023   AIC                          26180.805
-Time:                                    19:24:32   BIC                          26201.950
+Date:                            Sun, 12 Mar 2023   AIC                          26180.805
+Time:                                    21:12:58   BIC                          26201.950
 Sample:                                         0   HQIC                         26188.693
                                            - 1487                                         
 Covariance Type:                              opg                                         
@@ -176,8 +176,8 @@ Summary of the SARIMA model for CASE_COUNT:
 ==========================================================================================
 Dep. Variable:                         CASE_COUNT   No. Observations:                 1487
 Model:             SARIMAX(1, 0, 1)x(0, 1, 1, 12)   Log Likelihood              -17943.434
-Date:                            Sat, 11 Mar 2023   AIC                          35894.868
-Time:                                    19:25:02   BIC                          35916.016
+Date:                            Sun, 12 Mar 2023   AIC                          35894.868
+Time:                                    21:13:35   BIC                          35916.016
 Sample:                                         0   HQIC                         35902.757
                                            - 1487                                         
 Covariance Type:                              opg                                         

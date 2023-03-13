@@ -1,23 +1,21 @@
-import geopandas as gpd
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import pysal as ps
 from data_clean import merge_csv
-from shapely.geometry import Point
 
-df = merge_csv('data/SharedBike/nyc')
-agg_func = {'start station id': 'count', 'trip count': 'sum', 'tripduration_sum(sec)': 'sum',
-            'tripduration_mean(sec)': 'sum', 'tripduration_sum(mins)': 'sum', 'tripduration_mean(mins)': 'sum',
-            'CASE_COUNT': 'sum', 'HOSPITALIZED_COUNT': 'sum', 'DEATH_COUNT': 'sum',
-            'BX_CASE_COUNT': 'sum', 'BX_DEATH_COUNT': 'sum', 'BK_CASE_COUNT': 'sum', 'BK_DEATH_COUNT': 'sum',
-            'MN_CASE_COUNT': 'sum', 'MN_DEATH_COUNT': 'sum', 'QN_CASE_COUNT': 'sum', 'QN_DEATH_COUNT': 'sum',
-            'SI_CASE_COUNT': 'sum', 'SI_DEATH_COUNT': 'sum'}
-df_temporal = df.groupby('date').agg(agg_func)
-df_temporal.index = pd.to_datetime(df_temporal.index)
-print('\n{:=^60s}'.format('df_temporal'))
-print(df_temporal.shape)
-print(df_temporal.head())
-print(df_temporal.iloc[0])
-print(df_temporal.describe())
-print(df_temporal.columns)
+
+
+
+
+
+df = merge_csv('data/Covid_cases/nyc git by zipcode')
+df.drop_duplicates()
+df['End date'] = pd.to_datetime(df['End date'], format='%m/%d/%Y')
+df['End date'] = df['End date'].dt.strftime('%Y-%m-%d')
+df.rename(columns={'End date': 'date'}, inplace=True)
+df.to_csv('data/Covid_cases/covid_nyc_byzipcode.csv', encoding='utf-8')
+df = df.dropna(axis=0, how='all', inplace=True)
+
+
+print(df.head())
+print(df.tail())
+print(df.shape)
+print(df.describe())
