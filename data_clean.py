@@ -12,9 +12,6 @@ from shapely.geometry import MultiPoint, Point
 from tqdm import tqdm
 
 
-
-
-
 # # Shared bike DataSets
 # url_nyc = 'https://s3.amazonaws.com/tripdata/index.html'
 # url_boston = 'https://divvy-tripdata.s3.amazonaws.com/index.html'
@@ -61,6 +58,7 @@ def merge_csv(source_folder, target_folder=None, file_format=None, usecols=None)
     else:
         print('Please input the correct file format.')
     return frame
+
 
 class BikeDataClean:
     def __init__(self, csv):
@@ -251,9 +249,31 @@ class BikeDataClean:
 #         f.write(file_content)
 #
 
+# df = merge_csv('data/Covid_cases/nyc git by zipcode')
+# df.drop_duplicates()
+# df['End date'] = pd.to_datetime(df['End date'], format='%m/%d/%Y')
+# df['End date'] = df['End date'].dt.strftime('%Y-%m-%d')
+# df.rename(columns={'End date': 'date'}, inplace=True)
+# df.to_csv('data/Covid_cases/covid_nyc_byzipcode.csv', encoding='utf-8')
+# dfzip = df.dropna(axis=0, how='all', inplace=True)
+#
+# dfzip = pd.read_csv('data/Covid_cases/covid_nyc_byzipcode.csv')
+# dfzip['date'] = pd.to_datetime(dfzip['date'], format='%Y-%m-%d').dt.strftime('%Y-%m-%d')
+# dfzip = dfzip[dfzip['date'] <= '2023-01-01']
+# columns = dfzip.columns[8:-1]
+# df_meltd = pd.melt(dfzip, id_vars=['date'], value_vars=columns, var_name='MODZCTA', value_name='cases')
+# df_meltd['MODZCTA'] = df_meltd['MODZCTA'].astype(int)
+# df_pivot = pd.pivot_table(df_meltd, values='cases', index=['MODZCTA'], columns='date').reset_index().rename_axis(None,axis=1)
+# df_pivot.to_csv('data/Covid_cases/covid_nyc_byzipcode_T.csv', encoding='utf-8')
 
 
 
+#
+#
+# print(df.head())
+# print(df.tail())
+# print(df.shape)
+# print(df.describe())
 
 
 #

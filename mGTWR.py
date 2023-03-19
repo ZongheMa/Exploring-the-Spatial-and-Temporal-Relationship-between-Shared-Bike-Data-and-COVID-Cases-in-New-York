@@ -1,22 +1,21 @@
 import geopandas as gpd
+import numpy.linalg
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from data_clean import merge_csv
-from shapely.geometry import Point, Polygon, MultiPolygon
 from tqdm import tqdm
-import pysal as ps
-from gwr.gwr import GWR
-from gwr.sel_bw import Sel_BW
-from sklearn.preprocessing import StandardScaler
-from pysal.model import spreg
-from pysal.model import *
-from pysal.explore import *
+from mgtwr.sel import SearchMGTWRParameter
+from mgtwr.model import MGTWR
+import datetime
+from sklearn import preprocessing
+import warnings
+
+warnings.filterwarnings("ignore")
 
 nyc = gpd.read_file('data/geo/Geography-resources/MODZCTA_2010.shp')
 nyc['MODZCTA'] = nyc['MODZCTA'].astype('int64')
 nyc.to_crs(epsg=4326, inplace=True)
-dfzip = pd.read_csv('data/Covid_cases/covid_nyc_byzipcode_T.csv', index_col=0, dtype={'MODZCTA': 'int64'})
+dfzip = pd.read_csv('data/Covid_cases/covid_nyc_byzipcode_T.csv', index_col=0, dtype={'MODZCTA': 'int16'})
 covid_byzip = pd.merge(nyc, dfzip, on='MODZCTA', how='left')
 print(covid_byzip.columns)
 # covid_byzip.columns[3:] = pd.to_datetime(covid_byzip.columns[3:], format='%Y-%m-%d')
@@ -33,6 +32,9 @@ gdf = gpd.GeoDataFrame()
 gdf['covid_cases'] = np.nan
 count = 0
 for i in tqdm(bikes['date'].unique()):
+    if count == 30:
+        break
+
     if i in covid_byzip.columns:
         print(i)
         sjoin = gpd.sjoin(bikes[bikes['date'] == i], covid_byzip[['MODZCTA', i, 'geometry']], how='left',
@@ -43,15 +45,38 @@ for i in tqdm(bikes['date'].unique()):
         gdf.loc[bikes['date'] == i, 'covid_cases'] = sjoin[i].values
         gdf.drop(columns=i, inplace=True)
         count += 1
+        print(count)
     else:
         continue
-    if count == 2:
-        break
-
-# # normalize the training data of continuous variables
-# df['covid_cases'] = (df['covid_cases'] - df['covid_cases'].mean()) / df['covid_cases'].std()
-# df['tripduration_sum(mins)'] = (df['tripduration_sum(mins)'] - df['tripduration_sum(mins)'].mean()) / df['tripduration_sum(mins)'].std()
-# df['tripduration_mean(mins)'] = (df['tripduration_mean(mins)'] - df['tripduration_mean(mins)'].mean()) / df['tripduration_mean(mins)'].std()
 
 
+print(gdf.columns)
+coords = gdf[['start station latitude', 'start station longitude']].to_csv('data/SharedBike/coords.csv')
+# coords = list(zip(gdf['start station longitude'], gdf['start station latitude']))
 
+X = gdf[
+    ['covid_cases', 'trip count', 'tripduration_sum(mins)', 'tripduration_mean(mins)', 'usertype_member_count']].astype(
+    'float16').to_csv('data/SharedBike/X.csv')
+y = gdf[['trip count']].astype('float16').to_csv('data/SharedBike/y.csv')
+
+# # Normalize the variables
+# min_max_scaler = preprocessing.MinMaxScaler()
+# X[X.select_dtypes(include=[np.number]).columns] = min_max_scaler.fit_transform(X.select_dtypes(include=[np.number]))
+# y[y.select_dtypes(include=[np.number]).columns] = min_max_scaler.fit_transform(y.select_dtypes(include=[np.number]))
+
+t = gdf['date'].to_csv('data/SharedBike/t.csv')
+float_col = []
+for date_str in t:
+    date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    timestamp = date_obj.timestamp()
+    float_val = float(timestamp)
+    float_col.append(float_val)
+
+
+sel_multi = SearchMGTWRParameter(coords, float_col, X, y, kernel='gaussian', fixed=True)
+bws = sel_multi.search()
+# bws = sel_multi.search(multi_bw_min=[0.1], verbose=True, tol_multi=1.0e-4, time_cost=True)
+
+mgtwr = MGTWR(coords, float_col, X, y, sel_multi, kernel='gaussian', fixed=True).fit()
+
+print(mgtwr.R2)
