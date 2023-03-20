@@ -65,7 +65,7 @@ if __name__ == '__main__':
          'usertype_member_count': 'sum'})
     df = df.reset_index()
     df['timestamp'] = pd.to_datetime(df['date']).astype(int) // 10 ** 9
-    df.to_csv('data/df_M.csv')
+    # df.to_csv('data/df_M.csv')
 
     coords = df[['start station latitude', 'start station longitude']]
     # coords = list(zip(gdf['start station longitude'], gdf['start station latitude']))
@@ -95,19 +95,12 @@ if __name__ == '__main__':
     # t = t.reshape(-1, 1)
     # print('after t parse')
     # #
-    # sel_multi = SearchMGTWRParameter(coords, t, X, y, kernel='gaussian', fixed=True)
-    # bws = sel_multi.search()
+    sel_multi = SearchMGTWRParameter(coords, t, X, y, kernel='gaussian', fixed=True)
+    bws = sel_multi.search()
 
     print('fit')
 
 
-    class sel_multi:
-        def __init__(self, bws):
-            self.bws = bws
-
-
-    Bws = sel_multi([0.9, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5])
-    selector = sel_multi(Bws.bws)
     mgtwr = MGTWR(coords, t, X, y, selector, kernel='gaussian', fixed=True).fit()
 
     print(mgtwr.R2)
