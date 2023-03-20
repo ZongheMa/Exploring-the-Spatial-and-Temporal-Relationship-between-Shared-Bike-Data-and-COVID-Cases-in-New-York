@@ -64,15 +64,16 @@ if __name__ == '__main__':
          'covid_cases': 'sum', 'trip count': 'sum', 'tripduration_sum(mins)': 'sum', 'tripduration_mean(mins)': 'sum',
          'usertype_member_count': 'sum'})
     df = df.reset_index()
+    df['timestamp'] = pd.to_datetime(df['date']).astype(int) // 10 ** 9
+    df.to_csv('data/df_M.csv')
 
     coords = df[['start station latitude', 'start station longitude']]
     # coords = list(zip(gdf['start station longitude'], gdf['start station latitude']))
 
     X = df[
-        ['covid_cases', 'trip count', 'tripduration_sum(mins)', 'tripduration_mean(mins)',
-         'usertype_member_count']].astype(
+        ['covid_cases', 'tripduration_sum(mins)', 'tripduration_mean(mins)', 'usertype_member_count']].astype(
         'float16')
-    y = df[['trip count']].astype('float16')
+    y = df[['trip count']].astype(int)
 
     # # Normalize the variables
     # min_max_scaler = preprocessing.MinMaxScaler()
@@ -80,8 +81,9 @@ if __name__ == '__main__':
     # y[y.select_dtypes(include=[np.number]).columns] = min_max_scaler.fit_transform(y.select_dtypes(include=[np.number]))
 
     print('got it')
-    df['timestamp'] = pd.to_datetime(df['date']).astype(int) // 10 ** 9
-    t = df['timestamp']
+
+    t = df[['timestamp']].astype(int)
+
     # int_col = []
     # for date in t:
     #     # date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
@@ -92,11 +94,20 @@ if __name__ == '__main__':
     # t = np.array(int_col)
     # t = t.reshape(-1, 1)
     # print('after t parse')
-    #
-    sel_multi = SearchMGTWRParameter(coords, t, X, y, kernel='gaussian', fixed=True)
-    # bws = sel_multi.search(multi_bw_min=[0.1], verbose=True, tol_multi=1.0e-4, time_cost=True)
+    # #
+    # sel_multi = SearchMGTWRParameter(coords, t, X, y, kernel='gaussian', fixed=True)
+    # bws = sel_multi.search()
 
     print('fit')
-    mgtwr = MGTWR(coords, t, X, y, sel_multi, kernel='gaussian', fixed=True).fit()
+
+
+    class sel_multi:
+        def __init__(self, bws):
+            self.bws = bws
+
+
+    Bws = sel_multi([0.9, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5])
+    selector = sel_multi(Bws.bws)
+    mgtwr = MGTWR(coords, t, X, y, selector, kernel='gaussian', fixed=True).fit()
 
     print(mgtwr.R2)
