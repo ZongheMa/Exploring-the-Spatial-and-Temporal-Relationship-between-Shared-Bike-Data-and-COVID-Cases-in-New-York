@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 data/SharedBike
+data/export data for spatial analysis/scale.py
 
 .DS_Store
 
