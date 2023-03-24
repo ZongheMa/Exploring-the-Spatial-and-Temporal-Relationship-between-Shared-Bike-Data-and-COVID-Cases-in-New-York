@@ -22,10 +22,12 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 sys.stdout = open('output/temporal/BST_Running info of ESDA.txt', 'w')
 
 # temporal analysis part
-df = merge_csv('data/SharedBike/bst')
+df = merge_csv('data/SharedBike/bst')  # get the merged data
 # print(bike.iloc[0])
 # print(bike.head())
 # print(bike.describe())
+
+# decide if the data from nyc or boston
 if 'BX_CASE_COUNT' in df.columns:
     agg_func = {'start station id': 'count', 'trip count': 'sum', 'tripduration_sum(mins)': 'sum',
                 'tripduration_mean(mins)': 'sum',
@@ -38,11 +40,12 @@ else:
                 'tripduration_mean(mins)': 'sum',
                 'CASE_COUNT': 'sum'}
 
-df_temporal = df.groupby('date').agg(agg_func)
-df_temporal.index = pd.to_datetime(df_temporal.index)
+df_temporal = df.groupby('date').agg(agg_func)  # aggregate the data by date
+df_temporal.index = pd.to_datetime(df_temporal.index)  # convert the index to datetime
 # scale = StandardScaler()
 # df_temporal = pd.DataFrame(scale.fit_transform(df_temporal), columns=df_temporal.columns, index=df_temporal.index)
 
+# print the temporal data
 print('\n{:=^60s}'.format('df_temporal'))
 print(df_temporal.shape)
 print(df_temporal.head())
@@ -50,21 +53,23 @@ print(df_temporal.iloc[0])
 print(df_temporal.describe())
 print(df_temporal.columns)
 
-train = df_temporal.iloc[:int(0.8 * (len(df_temporal)))]
-test = df_temporal.iloc[int(0.8 * (len(df_temporal))):]
+# split the data into train and test
+train = df_temporal.iloc[:int(0.8 * (len(df_temporal)))]  # 80% of the data as train
+test = df_temporal.iloc[int(0.8 * (len(df_temporal))):]  # 20% of the data as test
 
-# visualize the temporal data
-# sns.lineplot(data=df_temporal, x='date', y='tripduration_sum(mins)')
-# cmap_r = cm.get_cmap('Reds_r', 3)
-# cmap_b = cm.get_cmap('Blues_r', 3)
-# cmap_o = cm.get_cmap('ocean', len(df_temporal.columns))
+# visualize the original temporal data
+'''sns.lineplot(data=df_temporal, x='date', y='tripduration_sum(mins)')
+cmap_r = cm.get_cmap('Reds_r', 3)
+cmap_b = cm.get_cmap('Blues_r', 3)
+cmap_o = cm.get_cmap('ocean', len(df_temporal.columns))'''
 cmap_r = ['maroon', 'brown', 'crimson']
 cmap_b = ['blue', 'darkblue', 'lightblue']
 fig, ax1 = plt.subplots(figsize=(18, 6), dpi=300)
-ax2 = ax1.twinx()
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 count_r = 0
 count_b = 0
-for i in range(len(df_temporal.columns)):
+for i in range(len(df_temporal.columns)):  # plot the data
+    # decide the color of the line
     if df_temporal.columns[i] in ['BX_CASE_COUNT', 'BX_DEATH_COUNT', 'BK_CASE_COUNT',
                                   'BK_DEATH_COUNT', 'MN_CASE_COUNT', 'MN_DEATH_COUNT', 'QN_CASE_COUNT',
                                   'QN_DEATH_COUNT', 'SI_CASE_COUNT', 'SI_DEATH_COUNT']:
@@ -132,39 +137,42 @@ plt.legend(['Histogram', 'Density'])
 plt.show()  # not sure what is the purpose of this plot
 fig.savefig('output/Histogram and Density Plot of the temporal dataset', dpi=300, bbox_inches='tight')
 '''
-# decomposition the time series
+types = ['tripduration_sum(mins)', 'trip count',
+         'CASE_COUNT']  # creat a list of the types of data, for the purpose of modelling and plotting
 
+'''# decomposition the time series # this the original code, but it has been merged into the loop below
 
-types = ['tripduration_sum(mins)', 'trip count', 'CASE_COUNT']
-# fig, ax = plt.subplots(4, len(types), figsize=(15, 10))
-# for i in range(4):
-#     for j in range(len(types)):
-#         decomposition = seasonal_decompose(df_temporal[types[j]], model='additive', period=365)
-#         trend = decomposition.trend
-#         seasonal = decomposition.seasonal
-#         residual = decomposition.resid
-#         if i == 0:
-#             ax[i, j].plot(df_temporal[types[j]], label='Original', linewidth=0.3, color='purple')
-#             ax[i, j].set_title(types[j])
-#         elif i == 1:
-#             ax[i, j].plot(trend, label='Trend', color='purple')
-#             ax[i, j].set_title('Trend')
-#         elif i == 2:
-#             ax[i, j].plot(seasonal, label='Seasonality', linewidth=0.3, color='purple')
-#             ax[i, j].set_title('Seasonality')
-#         else:
-#             ax[i, j].plot(residual, label='Residuals', linewidth=0.3, color='purple')
-#             ax[i, j].set_title('Residuals')
-#         ax[i, j].xaxis.set_major_locator(mdates.MonthLocator(bymonth=6))
-#         ax[i, j].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-#         ax[i, j].legend(loc='upper left')
-#
-# # fig.autofmt_xdate()
-# plt.subplots_adjust(hspace=0.4)
-# plt.show()
-# fig.savefig('output/Decomposition of the temporal dataset', dpi=300, bbox_inches='tight')
+fig, ax = plt.subplots(4, len(types), figsize=(15, 10))
+for i in range(4):
+    for j in range(len(types)):
+        decomposition = seasonal_decompose(df_temporal[types[j]], model='additive', period=365)
+        trend = decomposition.trend
+        seasonal = decomposition.seasonal
+        residual = decomposition.resid
+        if i == 0:
+            ax[i, j].plot(df_temporal[types[j]], label='Original', linewidth=0.3, color='purple')
+            ax[i, j].set_title(types[j])
+        elif i == 1:
+            ax[i, j].plot(trend, label='Trend', color='purple')
+            ax[i, j].set_title('Trend')
+        elif i == 2:
+            ax[i, j].plot(seasonal, label='Seasonality', linewidth=0.3, color='purple')
+            ax[i, j].set_title('Seasonality')
+        else:
+            ax[i, j].plot(residual, label='Residuals', linewidth=0.3, color='purple')
+            ax[i, j].set_title('Residuals')
+        ax[i, j].xaxis.set_major_locator(mdates.MonthLocator(bymonth=6))
+        ax[i, j].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+        ax[i, j].legend(loc='upper left')
+
+# fig.autofmt_xdate()
+plt.subplots_adjust(hspace=0.4)
+plt.show()
+fig.savefig('output/Decomposition of the temporal dataset', dpi=300, bbox_inches='tight')
+'''
 
 # ARIMA model
+# Here I tried the basic ARIMA model, but it did not work well, so I tried the SARIMA model, which is the seasonal ARIMA model
 '''for i in range(len(types)):
     # split the data into train and test sets
     train, test = df_temporal[types[i]][:-30], df_temporal[types[i]][-30:]
@@ -189,10 +197,16 @@ types = ['tripduration_sum(mins)', 'trip count', 'CASE_COUNT']
     rmse = np.sqrt(mean_squared_error(test, predictions))
     print('RMSE for {}: {}'.format(types[i], rmse))'''
 
+# The loop below is the main part for the time series analysis, including the ADF test, differencing, decomposition, and model fitting and evaluation
 for i in tqdm(range(len(types))):
     print('{:-^60s}'.format('Time series analysis for {}'.format(types[i])))
+
     # check the stationarity of the time series using ADF test
-    globals()['result_0_{}'.format(i + 1)] = adfuller(df_temporal[types[i]], autolag='BIC')
+    globals()['result_0_{}'.format(i + 1)] = adfuller(df_temporal[types[i]],
+                                                      autolag='BIC')  # Use the BIC method to automatically select the lag due to the large scale of dataset
+    # Use 'globals()' to create a variable in the global scope, so that it can be used in the next loop for visualization
+
+    # print the results of the ADF test
     print('\nThe ADF test for original time series:')
     print('p-value: %f' % globals()['result_0_{}'.format(i + 1)][1])
     print('ADF Statistic: %f' % globals()['result_0_{}'.format(i + 1)][0])
@@ -200,7 +214,7 @@ for i in tqdm(range(len(types))):
     for key, value in globals()['result_0_{}'.format(i + 1)][4].items():
         print('\t%s: %.3f' % (key, value))
 
-    # difference the time series
+    # Difference the time series
     globals()['diff_1_{}'.format(i + 1)] = df_temporal[types[i]].diff().dropna()
 
     # check the stationarity of the differenced time series using ADF test
@@ -212,7 +226,8 @@ for i in tqdm(range(len(types))):
     for key, value in globals()['result_1_{}'.format(i + 1)][4].items():
         print('\t%s: %.3f' % (key, value))
 
-    # # fit the ARIMA model
+    # # fit the ARIMA model # This code block is for the ARIMA model, but it was replaced by the SARIMA model
+    # # the order of the model is (p, d, q), where p is the order of the AR term, d is the order of differencing, and q is the order of the MA term
     # model = ARIMA(df_temporal[types[i]], order=(1, 1, 1))
     # globals()['model_fit_{}'.format(i + 1)] = model.fit()
     # # output the summary of the model
@@ -226,12 +241,11 @@ for i in tqdm(range(len(types))):
     # print(globals()['forecast_{}'.format(i + 1)])
 
     print('\n{:-^60s}'.format('SARIMA Model'))
-    # SARIMA model
-    # print('\n{:-^60s}'.format('SARIMA Model'))
-    # define the p, d, and q parameters
-    p = d = q = range(0, 2)
+
+    # Find the best parameters for the SARIMA model using the grid search method
 
     # generate all different combinations of p, d, and q triplets
+    p = d = q = range(0, 2)
     pdq = list(itertools.product(p, d, q))
 
     # generate all different combinations of seasonal p, d, and q triplets
@@ -255,12 +269,16 @@ for i in tqdm(range(len(types))):
             except:
                 continue
 
+    # print the best parameters
     print('Best SARIMA parameters:', best_params, best_params_seasonal)
     globals()['best_bic_{}'.format(i + 1)] = best_bic
     globals()['best_params_{}'.format(i + 1)] = best_params
     globals()['best_params_seasonal_{}'.format(i + 1)] = best_params_seasonal
 
-    # fit the SARIMA model
+    # fit the SARIMA model using the best parameters
+
+    # After comparing the forecast results of SARIMA between directly using the steps=365 and using the loop to predict the next single value based on the all previous values, the latter one is better
+    # So the loop as a kind of improvement is used for forecasting
 
     train_data = list(train[types[i]])
     forcast = []
@@ -277,64 +295,64 @@ for i in tqdm(range(len(types))):
         prediction = pre['value'][0]
         forcast.append(prediction)
         train_data.append(data)
-    globals()['forecast_{}'.format(i + 1)] = forcast
+
+    globals()['forecast_{}'.format(i + 1)] = forcast  # the forecast results of SARIMA model
 
     # output the SARIMA model summary
     print('Summary of the SARIMA model for {}:'.format(types[i]))
     print(globals()['model_fit_{}'.format(i + 1)].summary())
 
-    # calculate the residuals
-    globals()['residuals_{}'.format(i + 1)] = pd.DataFrame(globals()['model_fit_{}'.format(i + 1)].resid)
-
     # forecast the time series in SARIMA model
-
     index = pd.date_range(start='2023-01-01', periods=len(test), freq='D')
     globals()['forecast_{}'.format(i + 1)] = pd.DataFrame(globals()['forecast_{}'.format(i + 1)], columns=['value'],
                                                           index=index)
-
     print(globals()['forecast_{}'.format(i + 1)])
 
-# visualizations
+    # calculate the residuals to check the acceptability of the model
+    globals()['residuals_{}'.format(i + 1)] = pd.DataFrame(globals()['model_fit_{}'.format(i + 1)].resid)
+
+# visualizations part
 fig, ax = plt.subplots(10, len(types), figsize=(22, 12), dpi=150, constrained_layout=True)
-for i in range(10):
-    for j in range(3):
+for i in range(10):  # for each row of the figure
+    for j in range(3):  # for each column of the figure as well as each type of time series
+        # plot the decoposition of the time series and pick features
         decomposition = seasonal_decompose(df_temporal[types[j]], model='additive', period=365)
         trend = decomposition.trend
         seasonal = decomposition.seasonal
         residual = decomposition.resid
-        if i == 0:
+        if i == 0:  # plot the histogram and normal QQ plot of the time series
             sns.distplot(df_temporal[types[j]], hist=True, kde=True, bins=30, ax=ax[i, j], color='purple')
             ax[i, j].set_title(types[j])
             ax[i, j].legend(loc='upper left')
             # ax2 = ax[i, j].twinx()
             # stats.probplot(df_temporal[types[j]], plot=ax2)
             # ax2.set_ylabel('Normal QQ plot')
-        elif i == 1:
+        elif i == 1:  # plot the trend and seasonality of the time series
             ax[i, j].plot(df_temporal[types[j]], linewidth=0.5, label='Original time series', color='purple')
             ax[i, j].set_title('Temporal features for {}'.format(types[j]))
             ax[i, j].legend(loc='upper left')
-        elif i == 2:
+        elif i == 2:  # plot the trend of the original time series
             ax[i, j].plot(trend, label='Trend of original time series', color='purple')
             ax[i, j].xaxis.set_major_locator(mdates.MonthLocator(bymonth=6))
             ax[i, j].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
             ax[i, j].legend(loc='upper left')
-        elif i == 3:
+        elif i == 3:  # plot the seasonality of the original time series
             ax[i, j].plot(seasonal, label='Seasonality of original time series', linewidth=0.5, color='purple')
             ax[i, j].xaxis.set_major_locator(mdates.MonthLocator(bymonth=6))
             ax[i, j].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
             ax[i, j].legend(loc='upper left')
-        elif i == 4:
+        elif i == 4:  # plot the residuals of the original time series
             ax[i, j].plot(residual, label='Residuals of original time series', linewidth=0.5, color='purple')
             ax[i, j].xaxis.set_major_locator(mdates.MonthLocator(bymonth=6))
             ax[i, j].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
             ax[i, j].legend(loc='upper left')
-        elif i == 5:
+        elif i == 5:  # plot the differenced time series, order=1
             ax[i, j].plot(globals()['diff_1_{}'.format(j + 1)], linewidth=0.5, label='Differenced time series(order=1)',
                           color='purple')
             ax[i, j].legend(loc='upper left')
             ax[i, j].xaxis.set_major_locator(mdates.MonthLocator(bymonth=6))
             ax[i, j].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-        elif i == 6:
+        elif i == 6:  # plot the ACF and PACF of the original time series, we can choose the parameters of the ARIMA and SARIMA model based on the ACF and PACF
             sm.graphics.tsa.plot_acf(globals()['diff_1_{}'.format(j + 1)], ax=ax[i, j], color='purple')
             ax[i, j].set_title('ACF of differenced time series(order=1)')
             # ax[i, j].set_label('ACF of differenced time series(order=1) for {}'.format(types[j]))
@@ -344,14 +362,14 @@ for i in range(10):
             ax[i, j].set_title('PACF of differenced time series(order=1)')
             # ax[i, j].set_label('PACF of differenced time series(order=1) for {}'.format(types[j]))
             ax[i, j].legend(loc='upper left')
-        elif i == 8:
+        elif i == 8: # plot the residuals of the SARIMA model to check the acceptability of the model
             ax[i, j].plot(globals()['residuals_{}'.format(j + 1)], linewidth=0.5, label='SARIMA Residuals',
                           color='purple')
             ax[i, j].legend(loc='upper left')
             ax[i, j].text(0.25, 0.1, 'Best parameters: {}{}'.format(globals()['best_params_{}'.format(j + 1)],
                                                                     globals()['best_params_seasonal_{}'.format(j + 1)]),
                           horizontalalignment='center', verticalalignment='center', transform=ax[i, j].transAxes)
-        elif i == 9:
+        elif i == 9: # plot the forecast of the SARIMA model
             ax[i, j].plot(df_temporal[types[j]], label='Observed', color='purple')
             ax[i, j].set_xlim(pd.Timestamp('2019-01-01'), pd.Timestamp('2022-12-31'))
             ax[i, j].plot(globals()['forecast_{}'.format(j + 1)], label='Forecast', color='orchid')
@@ -361,7 +379,8 @@ for i in range(10):
             ax[i, j].set_xlabel('Date')
             ax[i, j].set_ylabel('Value')
 
-        elif i == 10:
+        # 2 figs below was not shown in the final output because they are not necessary, we can analyze the residuals of the SARIMA model to check the acceptability of the model
+        elif i == 10: # plot the ACF and PACF of the residuals of the SARIMA model
             sm.graphics.tsa.plot_acf(globals()['residuals_{}'.format(j + 1)], ax=ax[i, j], color='purple')
             ax[i, j].set_title('ACF of SARIMA residuals')
             # ax[i, j].set_label('ACF of residuals for {}'.format(types[j]))

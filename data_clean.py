@@ -21,7 +21,7 @@ from tqdm import tqdm
 # download_link('https://s3.amazonaws.com/tripdata/201306-citibike-tripdata.zip')
 
 
-def get_csv_paths(folder_path):
+def get_csv_paths(folder_path):  # define a function to get all csv files in a folder
     csv_files = []
     for root, dirs, files in os.walk(folder_path):
         for file in files:
@@ -32,7 +32,7 @@ def get_csv_paths(folder_path):
 
 
 # Shared bike datasets
-def unzip_files(source_folder, target_folder):
+def unzip_files(source_folder, target_folder):  # define a function to unzip all files in a folder
     for filename in tqdm(os.listdir(source_folder)):
         if filename.endswith('.zip'):
             file_path = os.path.join(source_folder, filename)
@@ -40,7 +40,8 @@ def unzip_files(source_folder, target_folder):
                 zip_ref.extractall(target_folder)
 
 
-def merge_csv(source_folder, target_folder=None, file_format=None, usecols=None):
+def merge_csv(source_folder, target_folder=None, file_format=None,
+              usecols=None):  # define a function to merge all csv files in a folder
     print('Merge process is running...')
     all_files = glob.glob(source_folder + "/*.csv")
     list_ = []
@@ -60,12 +61,13 @@ def merge_csv(source_folder, target_folder=None, file_format=None, usecols=None)
     return frame
 
 
-class BikeDataClean:
+class BikeDataClean:  # define a class to clean the shared bike datasets
     def __init__(self, csv):
         self.ori_csv = csv
         self.df = None
 
-    def uniform(self):
+    def uniform(
+            self):  # define a function to uniform the column names of the shared bike datasets from different cities
         df = pd.read_csv(self.ori_csv, encoding='utf-8')
         if 'tripduration' not in df.columns:
             df.rename(
@@ -82,6 +84,7 @@ class BikeDataClean:
         return df
 
     def basic_csv(self):
+        # define a function to clean the shared bike datasets, and return a basic format of the datasets
 
         df = self.uniform()
         # filter out invalid data
@@ -125,7 +128,7 @@ class BikeDataClean:
         return gdf, ori_len - len(df), ori_len,
 
     def complex_csv(self):
-
+        # define a function to clean the shared bike datasets, and return a complex format with compressed geometry of the datasets
         ori_csv = pd.read_csv(self.ori_csv)
         ori_len = len(ori_csv)
         ori_csv = ori_csv[(ori_csv['tripduration'] > 60) & (ori_csv['tripduration'] < 21600)]
@@ -220,104 +223,92 @@ class BikeDataClean:
         return t_df
 
 
-# # Data cleaning part
-#
-# # # Unzip raw files
-# # source_folder = '/Users/zonghe/Downloads/'
-# # target_folder = '/Users/zonghe/Documents/Modules/Term2/CEGE0042_STDM/STDM/data/SharedBike/ori_bst'
-# # unzip_files(source_folder, target_folder)
-#
-#
-#
-#
-# # get NYC daily Covid data by zipcode from GitHub commits history
-# # Clone the repository to a temporary directory
-# repo_url = 'https://github.com/nychealth/coronavirus-data.git'
-# temp_dir = './temp1'
-# repo = git.Repo.clone_from(repo_url, temp_dir)
-#
-# # Set the file path of the file to be downloaded
-# file_path = 'latest/pp-by-modzcta.csv'
-#
-# # Get all commits that modified the file
-# commits = list(repo.iter_commits(paths=file_path))
-#
-# # Download all versions of the file
-# for i, commit in enumerate(commits):
-#     file_content = commit.tree[file_path].data_stream.read()
-#     with open(os.path.join('data/Covid_cases/nyc git by zipcode/', f'version_{i}.csv'), 'wb') as f:
-#         f.write(file_content)
-#
+# Data cleaning part
 
-# df = merge_csv('data/Covid_cases/nyc git by zipcode')
-# df.drop_duplicates()
-# df['End date'] = pd.to_datetime(df['End date'], format='%m/%d/%Y')
-# df['End date'] = df['End date'].dt.strftime('%Y-%m-%d')
-# df.rename(columns={'End date': 'date'}, inplace=True)
-# df.to_csv('data/Covid_cases/covid_nyc_byzipcode.csv', encoding='utf-8')
-# dfzip = df.dropna(axis=0, how='all', inplace=True)
-#
-# dfzip = pd.read_csv('data/Covid_cases/covid_nyc_byzipcode.csv')
-# dfzip['date'] = pd.to_datetime(dfzip['date'], format='%Y-%m-%d').dt.strftime('%Y-%m-%d')
-# dfzip = dfzip[dfzip['date'] <= '2023-01-01']
-# columns = dfzip.columns[8:-1]
-# df_meltd = pd.melt(dfzip, id_vars=['date'], value_vars=columns, var_name='MODZCTA', value_name='cases')
-# df_meltd['MODZCTA'] = df_meltd['MODZCTA'].astype(int)
-# df_pivot = pd.pivot_table(df_meltd, values='cases', index=['MODZCTA'], columns='date').reset_index().rename_axis(None,axis=1)
-# df_pivot.to_csv('data/Covid_cases/covid_nyc_byzipcode_T.csv', encoding='utf-8')
+# Unzip raw files
+source_folder = '/Users/zonghe/Downloads/'
+target_folder = '/Users/zonghe/Documents/Modules/Term2/CEGE0042_STDM/STDM/data/SharedBike/ori_bst'
+unzip_files(source_folder, target_folder)
 
+# get NYC daily Covid data by zipcode from GitHub commits history
+# Clone the repository to a temporary directory
+repo_url = 'https://github.com/nychealth/coronavirus-data.git'
+temp_dir = './temp1'
+repo = git.Repo.clone_from(repo_url, temp_dir)
 
+# Set the file path of the file to be downloaded
+file_path = 'latest/pp-by-modzcta.csv'
 
-#
-#
-# print(df.head())
-# print(df.tail())
-# print(df.shape)
-# print(df.describe())
+# Get all commits that modified the file
+commits = list(repo.iter_commits(paths=file_path))
 
+# Download all versions of the file
+for i, commit in enumerate(commits):
+    file_content = commit.tree[file_path].data_stream.read()
+    with open(os.path.join('data/Covid_cases/nyc git by zipcode/', f'version_{i}.csv'), 'wb') as f:
+        f.write(file_content)
 
-#
-#
-# # Covid-19 data from NYC Health(https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv)
-# df = pd.read_csv('https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv')
-# covid_nyc = pd.DataFrame(df,
-#                          columns=['date_of_interest', 'CASE_COUNT', 'HOSPITALIZED_COUNT', 'DEATH_COUNT',
-#                                   'BX_CASE_COUNT', 'BX_DEATH_COUNT', 'BK_CASE_COUNT', 'BK_DEATH_COUNT', 'MN_CASE_COUNT',
-#                                   'MN_DEATH_COUNT', 'QN_CASE_COUNT', 'QN_DEATH_COUNT', 'SI_CASE_COUNT',
-#                                   'SI_DEATH_COUNT'])
-# covid_nyc['date_of_interest'] = pd.to_datetime(covid_nyc['date_of_interest'], format='%m/%d/%Y').astype(str)
-# covid_nyc = covid_nyc.loc[covid_nyc['date_of_interest'] < '2023-02-01']
-# covid_nyc.rename(columns={'date_of_interest': 'date'}, inplace=True)
-#
-# db = pd.DataFrame(pd.date_range(start='2019-01-01', end='2020-02-28', freq='D').astype(str), columns=['date'])
-#
-# covid_nyc = pd.concat([db, covid_nyc], axis=0, join='outer', ignore_index=True).fillna(0)
-# covid_nyc.to_csv('data/Covid_cases/covid_nyc.csv', index=False)
-#
-# # Covid cases data from City of BST(https://www.boston.gov/government/cabinets/boston-public-health-commission/covid-19-boston )
-# df = pd.read_csv('data/Covid_cases/Boston_COVID-19_NewCases.csv')
-# df = df.loc[:, ['Category1', 'Value']]
-# df.rename(columns={'Category1': 'date', 'Value': 'cases'}, inplace=True)
-# df['date'] = pd.to_datetime(df['date'], format='%m/%d/%Y').astype(str)
-# db = pd.DataFrame(pd.date_range(start='2019-01-01', end='2020-02-21', freq='D').astype(str), columns=['date'])
-# df = pd.concat([db, df], axis=0, join='outer', ignore_index=True).fillna(0)
-# df.index = pd.to_datetime(df['date'])
-# df.resample('D').mean().interpolate()  # interpolate the missing values
-# df.to_csv('data/Covid_cases/covid_bst.csv', index=False)
+df = merge_csv('data/Covid_cases/nyc git by zipcode')
+df.drop_duplicates()
+df['End date'] = pd.to_datetime(df['End date'], format='%m/%d/%Y')
+df['End date'] = df['End date'].dt.strftime('%Y-%m-%d')
+df.rename(columns={'End date': 'date'}, inplace=True)
+df.to_csv('data/Covid_cases/covid_nyc_byzipcode.csv', encoding='utf-8')
+dfzip = df.dropna(axis=0, how='all', inplace=True)
 
+dfzip = pd.read_csv('data/Covid_cases/covid_nyc_byzipcode.csv')
+dfzip['date'] = pd.to_datetime(dfzip['date'], format='%Y-%m-%d').dt.strftime('%Y-%m-%d')
+dfzip = dfzip[dfzip['date'] <= '2023-01-01']
+columns = dfzip.columns[8:-1]
+df_meltd = pd.melt(dfzip, id_vars=['date'], value_vars=columns, var_name='MODZCTA', value_name='cases')
+df_meltd['MODZCTA'] = df_meltd['MODZCTA'].astype(int)
+df_pivot = pd.pivot_table(df_meltd, values='cases', index=['MODZCTA'], columns='date').reset_index().rename_axis(None,
+                                                                                                                 axis=1)
+df_pivot.to_csv('data/Covid_cases/covid_nyc_byzipcode_T.csv', encoding='utf-8')
 
-#
-# # Data cleaning
-# csv_files = get_csv_paths('data/SharedBike/ori_bst')
-# covid = pd.read_csv('data/Covid_cases/covid_bst.csv')
-# invalid_count, total_count = 0, 0
-# for i in tqdm(range(len(csv_files))):
-#     df, invalid, total = BikeDataClean(csv_files[i]) .basic_csv()  # basic cleaning
-#     invalid_count = invalid_count + invalid
-#     total_count = total_count + total
-#     df = pd.merge(df, covid, on='date', how='left')
-#
-#     df.to_csv('data/SharedBike/bst/' + 'cleaned-' + os.path.splitext(os.path.basename(csv_files[i]))[0] + '.csv',
-#               index=False)
-# print(f'Invalid data percentage: {round(invalid_count / total_count, 4)}')
-# print('BST data cleaning completed!')
+print(df.head())
+print(df.tail())
+print(df.shape)
+print(df.describe())
+
+# Covid-19 data from NYC Health(https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv)
+df = pd.read_csv('https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv')
+covid_nyc = pd.DataFrame(df,
+                         columns=['date_of_interest', 'CASE_COUNT', 'HOSPITALIZED_COUNT', 'DEATH_COUNT',
+                                  'BX_CASE_COUNT', 'BX_DEATH_COUNT', 'BK_CASE_COUNT', 'BK_DEATH_COUNT', 'MN_CASE_COUNT',
+                                  'MN_DEATH_COUNT', 'QN_CASE_COUNT', 'QN_DEATH_COUNT', 'SI_CASE_COUNT',
+                                  'SI_DEATH_COUNT'])
+covid_nyc['date_of_interest'] = pd.to_datetime(covid_nyc['date_of_interest'], format='%m/%d/%Y').astype(str)
+covid_nyc = covid_nyc.loc[covid_nyc['date_of_interest'] < '2023-02-01']
+covid_nyc.rename(columns={'date_of_interest': 'date'}, inplace=True)
+
+db = pd.DataFrame(pd.date_range(start='2019-01-01', end='2020-02-28', freq='D').astype(str), columns=['date'])
+
+covid_nyc = pd.concat([db, covid_nyc], axis=0, join='outer', ignore_index=True).fillna(0)
+covid_nyc.to_csv('data/Covid_cases/covid_nyc.csv', index=False)
+
+# Covid cases data from City of BST(https://www.boston.gov/government/cabinets/boston-public-health-commission/covid-19-boston )
+df = pd.read_csv('data/Covid_cases/Boston_COVID-19_NewCases.csv')
+df = df.loc[:, ['Category1', 'Value']]
+df.rename(columns={'Category1': 'date', 'Value': 'cases'}, inplace=True)
+df['date'] = pd.to_datetime(df['date'], format='%m/%d/%Y').astype(str)
+db = pd.DataFrame(pd.date_range(start='2019-01-01', end='2020-02-21', freq='D').astype(str), columns=['date'])
+df = pd.concat([db, df], axis=0, join='outer', ignore_index=True).fillna(0)
+df.index = pd.to_datetime(df['date'])
+df.resample('D').mean().interpolate()  # interpolate the missing values
+df.to_csv('data/Covid_cases/covid_bst.csv', index=False)
+
+# Data cleaning for BST shared bike data
+csv_files = get_csv_paths('data/SharedBike/ori_bst')
+covid = pd.read_csv('data/Covid_cases/covid_bst.csv')
+invalid_count, total_count = 0, 0
+for i in tqdm(range(len(csv_files))):
+    df, invalid, total = BikeDataClean(csv_files[i]).basic_csv()  # basic cleaning
+    invalid_count = invalid_count + invalid
+    total_count = total_count + total
+    df = pd.merge(df, covid, on='date', how='left')
+
+    df.to_csv('data/SharedBike/bst/' + 'cleaned-' + os.path.splitext(os.path.basename(csv_files[i]))[0] + '.csv',
+              index=False)
+print(f'Invalid data percentage: {round(invalid_count / total_count, 4)}')
+print('BST data cleaning completed!')
