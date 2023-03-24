@@ -18,7 +18,7 @@ import sys
 from scipy import stats
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
-# change the output path
+# change the output path of the running info.
 sys.stdout = open('output/temporal/BST_Running info of ESDA.txt', 'w')
 
 # temporal analysis part
