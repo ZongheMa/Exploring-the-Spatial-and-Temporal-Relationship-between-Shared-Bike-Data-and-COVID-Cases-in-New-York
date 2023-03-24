@@ -1,0 +1,232 @@
+Merge process is running...
+
+========================df_temporal=========================
+(1460, 17)
+            start station id  trip count  ...  SI_CASE_COUNT  SI_DEATH_COUNT
+date                                      ...                               
+2019-01-01               750       21932  ...            0.0             0.0
+2019-01-02               756       37773  ...            0.0             0.0
+2019-01-03               758       41644  ...            0.0             0.0
+2019-01-04               757       43893  ...            0.0             0.0
+2019-01-05               744       17416  ...            0.0             0.0
+
+[5 rows x 17 columns]
+start station id              750.0000
+trip count                  21932.0000
+tripduration_sum(mins)     354043.4998
+tripduration_mean(mins)     11623.3758
+CASE_COUNT                      0.0000
+HOSPITALIZED_COUNT              0.0000
+DEATH_COUNT                     0.0000
+BX_CASE_COUNT                   0.0000
+BX_DEATH_COUNT                  0.0000
+BK_CASE_COUNT                   0.0000
+BK_DEATH_COUNT                  0.0000
+MN_CASE_COUNT                   0.0000
+MN_DEATH_COUNT                  0.0000
+QN_CASE_COUNT                   0.0000
+QN_DEATH_COUNT                  0.0000
+SI_CASE_COUNT                   0.0000
+SI_DEATH_COUNT                  0.0000
+Name: 2019-01-01 00:00:00, dtype: float64
+       start station id     trip count  ...  SI_CASE_COUNT  SI_DEATH_COUNT
+count       1460.000000    1460.000000  ...   1.460000e+03     1460.000000
+mean        4533.413014   66366.094521  ...   6.953576e+05     5809.246575
+std         7542.290548   30285.766864  ...   1.330818e+06    13176.758662
+min          143.000000     177.000000  ...   0.000000e+00        0.000000
+25%          854.000000   40870.750000  ...   0.000000e+00        0.000000
+50%         1129.000000   66511.500000  ...   1.031350e+05        0.000000
+75%         2840.250000   87609.500000  ...   5.085470e+05     5385.500000
+max        35012.000000  134892.000000  ...   9.657120e+06   138138.000000
+
+[8 rows x 17 columns]
+Index(['start station id', 'trip count', 'tripduration_sum(mins)',
+       'tripduration_mean(mins)', 'CASE_COUNT', 'HOSPITALIZED_COUNT',
+       'DEATH_COUNT', 'BX_CASE_COUNT', 'BX_DEATH_COUNT', 'BK_CASE_COUNT',
+       'BK_DEATH_COUNT', 'MN_CASE_COUNT', 'MN_DEATH_COUNT', 'QN_CASE_COUNT',
+       'QN_DEATH_COUNT', 'SI_CASE_COUNT', 'SI_DEATH_COUNT'],
+      dtype='object')
+------Time series analysis for tripduration_sum(mins)-------
+
+The ADF test for original time series:
+p-value: 0.184132
+ADF Statistic: -2.263138
+Critical Values:
+	1%: -3.435
+	5%: -2.864
+	10%: -2.568
+
+The ADF test for differenced time series (Difference order 1):
+p-value: 0.000000
+ADF Statistic: -11.174199
+Critical Values:
+	1%: -3.435
+	5%: -2.864
+	10%: -2.568
+
+------------------------SARIMA Model------------------------
+Best SARIMA parameters: (1, 1, 1) (0, 0, 1, 12)
+Summary of the SARIMA model for tripduration_sum(mins):
+                                     SARIMAX Results                                      
+==========================================================================================
+Dep. Variable:                                  0   No. Observations:                 1459
+Model:             SARIMAX(1, 1, 1)x(0, 0, 1, 12)   Log Likelihood              -20270.718
+Date:                            Thu, 23 Mar 2023   AIC                          40549.436
+Time:                                    22:08:59   BIC                          40570.536
+Sample:                                         0   HQIC                         40557.312
+                                           - 1459                                         
+Covariance Type:                              opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1          0.2554      0.030      8.440      0.000       0.196       0.315
+ma.L1         -0.8788      0.017    -51.237      0.000      -0.912      -0.845
+ma.S.L12      -0.0760      0.027     -2.795      0.005      -0.129      -0.023
+sigma2      1.011e+11   6.07e-14   1.67e+24      0.000    1.01e+11    1.01e+11
+===================================================================================
+Ljung-Box (L1) (Q):                   1.09   Jarque-Bera (JB):               317.47
+Prob(Q):                              0.30   Prob(JB):                         0.00
+Heteroskedasticity (H):               1.60   Skew:                            -0.05
+Prob(H) (two-sided):                  0.00   Kurtosis:                         5.30
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).
+[2] Covariance matrix is singular or near-singular, with condition number 1.43e+39. Standard errors may be unstable.
+                    value
+2023-01-01  688894.336198
+2023-01-02  810223.659315
+2023-01-03  846431.815355
+2023-01-04  674991.822248
+2023-01-05  994937.836550
+...                   ...
+2023-10-15  395095.566773
+2023-10-16  438703.405225
+2023-10-17  461302.680828
+2023-10-18  546094.523498
+2023-10-19  657553.691776
+
+[292 rows x 1 columns]
+------------Time series analysis for trip count-------------
+
+The ADF test for original time series:
+p-value: 0.222526
+ADF Statistic: -2.156196
+Critical Values:
+	1%: -3.435
+	5%: -2.864
+	10%: -2.568
+
+The ADF test for differenced time series (Difference order 1):
+p-value: 0.000000
+ADF Statistic: -10.173839
+Critical Values:
+	1%: -3.435
+	5%: -2.864
+	10%: -2.568
+
+------------------------SARIMA Model------------------------
+Best SARIMA parameters: (1, 1, 1) (0, 0, 1, 12)
+Summary of the SARIMA model for trip count:
+                                     SARIMAX Results                                      
+==========================================================================================
+Dep. Variable:                                  0   No. Observations:                 1459
+Model:             SARIMAX(1, 1, 1)x(0, 0, 1, 12)   Log Likelihood              -15917.714
+Date:                            Thu, 23 Mar 2023   AIC                          31843.428
+Time:                                    22:31:39   BIC                          31864.529
+Sample:                                         0   HQIC                         31851.304
+                                           - 1459                                         
+Covariance Type:                              opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1          0.2957      0.030      9.996      0.000       0.238       0.354
+ma.L1         -0.8670      0.018    -47.929      0.000      -0.903      -0.832
+ma.S.L12      -0.0596      0.030     -2.019      0.043      -0.117      -0.002
+sigma2      2.375e+08   4.28e-12   5.55e+19      0.000    2.38e+08    2.38e+08
+===================================================================================
+Ljung-Box (L1) (Q):                   0.50   Jarque-Bera (JB):               432.22
+Prob(Q):                              0.48   Prob(JB):                         0.00
+Heteroskedasticity (H):               1.52   Skew:                            -0.81
+Prob(H) (two-sided):                  0.00   Kurtosis:                         5.13
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).
+[2] Covariance matrix is singular or near-singular, with condition number 1.55e+36. Standard errors may be unstable.
+                   value
+2023-01-01  53668.536948
+2023-01-02  61473.525666
+2023-01-03  64667.756700
+2023-01-04  54094.835324
+2023-01-05  69886.269986
+...                  ...
+2023-10-15  32561.860393
+2023-10-16  37097.585422
+2023-10-17  39114.824364
+2023-10-18  44383.072306
+2023-10-19  49295.189496
+
+[292 rows x 1 columns]
+------------Time series analysis for CASE_COUNT-------------
+
+The ADF test for original time series:
+p-value: 0.208837
+ADF Statistic: -2.192887
+Critical Values:
+	1%: -3.435
+	5%: -2.864
+	10%: -2.568
+
+The ADF test for differenced time series (Difference order 1):
+p-value: 0.000000
+ADF Statistic: -9.219584
+Critical Values:
+	1%: -3.435
+	5%: -2.864
+	10%: -2.568
+
+------------------------SARIMA Model------------------------
+Best SARIMA parameters: (1, 1, 1) (1, 0, 1, 12)
+Summary of the SARIMA model for CASE_COUNT:
+                                     SARIMAX Results                                      
+==========================================================================================
+Dep. Variable:                                  0   No. Observations:                 1459
+Model:             SARIMAX(1, 1, 1)x(1, 0, 1, 12)   Log Likelihood              -25061.601
+Date:                            Thu, 23 Mar 2023   AIC                          50133.201
+Time:                                    22:34:08   BIC                          50159.577
+Sample:                                         0   HQIC                         50143.046
+                                           - 1459                                         
+Covariance Type:                              opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1          0.4825      0.015     31.414      0.000       0.452       0.513
+ma.L1         -0.8375      0.010    -85.550      0.000      -0.857      -0.818
+ar.S.L12       0.5942      0.051     11.597      0.000       0.494       0.695
+ma.S.L12      -0.8018      0.048    -16.578      0.000      -0.897      -0.707
+sigma2      7.996e+13   1.65e-15   4.86e+28      0.000       8e+13       8e+13
+===================================================================================
+Ljung-Box (L1) (Q):                  14.61   Jarque-Bera (JB):             85261.85
+Prob(Q):                              0.00   Prob(JB):                         0.00
+Heteroskedasticity (H):            2896.08   Skew:                             2.83
+Prob(H) (two-sided):                  0.00   Kurtosis:                        40.22
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).
+[2] Covariance matrix is singular or near-singular, with condition number 1.49e+43. Standard errors may be unstable.
+                   value
+2023-01-01  2.860755e+06
+2023-01-02  2.488141e+06
+2023-01-03  2.851294e+06
+2023-01-04  1.887989e+06
+2023-01-05  2.654590e+06
+...                  ...
+2023-10-15  4.592846e+07
+2023-10-16  5.994604e+07
+2023-10-17  5.225294e+07
+2023-10-18  7.900210e+07
+2023-10-19  5.371038e+07
+
+[292 rows x 1 columns]

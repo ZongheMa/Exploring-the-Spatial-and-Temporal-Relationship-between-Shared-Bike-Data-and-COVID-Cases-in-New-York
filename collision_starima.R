@@ -12,7 +12,7 @@ library(OpenStreetMap)
 library(spacetime)
 
 #set working directory accordingly with setwd()
-ca_counties <- readOGR(dsn="/Users/zonghe/Documents/Modules/Term2/CEGE0042_STDM/STDM/data/geo/Geography-resources/MODZCTA_2010.shp")
+ca_counties <- readOGR(dsn="data/geo/Geography-resources/MODZCTA_2010.shp")
 W <- nb2listw(poly2nb(ca_counties))
 W
 kable(listw2mat(W))

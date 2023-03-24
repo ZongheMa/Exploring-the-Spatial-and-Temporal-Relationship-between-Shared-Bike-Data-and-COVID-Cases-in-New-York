@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 from data_clean import merge_csv
 from tqdm import tqdm
-from mgtwr.sel import SearchMGTWRParameter
-from mgtwr.model import MGTWR
+# from MGTWR.sel import SearchMGTWRParameter
+# from MGTWR.model import MGTWR
 import datetime
 import mgwr
 from mgwr.gwr import MGWR
