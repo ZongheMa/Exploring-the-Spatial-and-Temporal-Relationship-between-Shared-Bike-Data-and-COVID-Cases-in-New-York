@@ -1,0 +1,109 @@
+Multiscale Geographically Weighted Regression (MGWR)
+=====================
+Parameters
+
+Input Features     df_GWR_XYTableToPoint
+Dependent Variable     trip_count
+Model Type     CONTINUOUS
+Explanatory Variables     start_station_id;covid_cases;tripduration_sum_mins_;tripduration_mean_mins_;usertype_member_count
+Output Features     D:\Desktop\nyc_MGWR\nyc_mgwr.shp
+Neighborhood Type     DISTANCE_BAND
+Neighborhood Selection Method     GOLDEN_SEARCH
+Minimum Number of Neighbors     
+Maximum Number of Neighbors     
+Distance Unit     KILOMETERS
+Minimum Search Distance     
+Maximum Search Distance     
+Number of Neighbors Increment     
+Search Distance Increment     
+Number of Increments     
+Number of Neighbors     
+Distance Band     
+Number of Neighbors for Golden Search     
+Number of Neighbors for Manual Intervals     
+User Defined Number of Neighbors     
+Search Distance for Golden Search     start_station_id # #;covid_cases # #;tripduration_sum_mins_ # #;tripduration_mean_mins_ # #;usertype_member_count # #
+Search Distance for Manual Intervals     
+User Defined Search Distance     
+Prediction Locations     df_GWR_XYTableToPoint
+Explanatory Variables to Match     start_station_id 'start station id';covid_cases covid_cases;tripduration_sum_mins_ tripduration_sum(mins);tripduration_mean_mins_ tripduration_mean(mins);usertype_member_count usertype_member_count
+Output Predicted Features     D:\Desktop\nyc_MGWR\nyc_predictions.shp
+Robust Prediction     ROBUST
+Local Weighting Scheme     GAUSSIAN
+Output Neighborhood Table     D:\Desktop\bst_MGWR\neighborhood table.dbf
+Coefficient Raster Workspace     
+Scale Data     SCALE_DATA
+Coefficient Raster Layers     
+Output Layer Group     nyc_MGWR_Results
+Elapsed Time: 51 minutes 55 seconds
+=====================
+Summary Statistics for Coefficients Estimates
+Explanatory Variables	Mean	Standard Deviation	Minimum	Median	Maximum
+Intercept	0.0070	0.0217	-0.0473	0.0064	0.0609
+start station id	0.0076	0.0057	-0.0111	0.0074	0.0253
+covid_cases	0.0232	0.0082	0.0058	0.0208	0.0376
+tripduration_sum(mins)	0.3446	0.0191	0.2608	0.3465	0.3821
+tripduration_mean(mins)	-0.0189	0.0165	-0.0477	-0.0154	0.0080
+usertype_member_count	0.6704	0.0195	0.6216	0.6728	0.7152
+=====================
+Model Diagnostics
+Statistic	GWR	MGWR
+R-Squared	0.9993	0.9993
+Adjusted R-Squared	0.9993	0.9993
+AICc	-14061.4512	-13964.7686
+Sigma-Squared	0.0007	0.0007
+Sigma-Squared MLE	0.0007	0.0007
+Effective Degrees of Freedom	3079.7120	3157.4702
+Optimal GWR Bandwidth: 1.96 kilometers (Distance).
+=====================
+Summary of Explanatory Variables and Neighborhoods
+Explanatory Variables	Bandwidth (% of Extent)a	Significant (% of Features)b
+Intercept	1.96 (6.35)	1701 (52.89)
+start station id	1.96 (6.35)	1392 (43.28)
+covid_cases	3.08 (9.98)	3110 (96.70)
+tripduration_sum(mins)	1.96 (6.35)	3216 (100.00)
+tripduration_mean(mins)	2.67 (8.64)	1858 (57.77)
+usertype_member_count	1.96 (6.35)	3216 (100.00)
+Distance Unit: kilometers
+a: This number in the parenthesis ranges from 0 to 100%, and can be interpreted as a local, regional, global scale based on the geographical context from low to high.
+b: In the parentheses, the percentage of features that have significant coefficients of an explanatory variable.
+=====================
+Optimal Bandwidths Search History
+Iterations	Intercept	start station id	covid_cases	tripduration_sum(mins)	tripduration_mean(mins)	usertype_member_count	AICc
+0	1.96	1.96	1.96	1.96	1.96	1.96	-14061.4512
+1	1.96	1.96	1.96	1.96	1.97	1.96	-13013.2744
+2	1.96	1.96	2.19	1.96	1.97	1.97	-13627.3486
+3	1.96	1.96	2.66	1.96	1.96	1.96	-13725.5510
+4	1.96	1.96	2.66	1.96	2.36	1.97	-13787.3912
+5	1.96	1.96	2.94	1.96	2.48	1.97	-13817.5688
+6	1.96	1.96	2.96	1.96	2.66	1.96	-13827.1561
+7	1.96	1.96	2.96	1.96	2.66	1.96	-13835.3348
+8	1.96	1.96	2.96	1.96	2.66	1.96	-13844.3766
+9	1.96	1.96	3.1	1.96	2.66	1.96	-13858.7565
+10	1.96	1.96	3.08	1.96	2.66	1.96	-13870.7500
+11	1.96	1.96	3.08	1.96	2.66	1.96	-13882.0303
+12	1.96	1.96	3.08	1.96	2.66	1.96	-13893.2153
+13	1.96	1.96	3.08	1.96	2.66	1.96	-13903.6576
+14	1.96	1.96	3.08	1.96	2.66	1.96	-13913.1190
+15	1.96	1.96	3.08	1.96	2.66	1.96	-13922.1445
+16	1.96	1.96	3.08	1.96	2.66	1.96	-13929.5200
+17	1.96	1.96	3.08	1.96	2.66	1.96	-13935.9351
+18	1.96	1.96	3.08	1.96	2.66	1.96	-13941.4922
+19	1.96	1.96	3.08	1.96	2.66	1.96	-13946.2980
+20	1.96	1.96	3.08	1.96	2.66	1.96	-13950.4589
+21	1.96	1.96	3.08	1.96	2.66	1.96	-13954.0753
+22	1.96	1.96	3.08	1.96	2.66	1.96	-13957.2382
+23	1.96	1.96	3.08	1.96	2.67	1.96	-13960.0467
+24	1.96	1.96	3.08	1.96	2.67	1.96	-13962.5424
+25	1.96	1.96	3.08	1.96	2.67	1.96	-13964.7686
+Distance Unit: kilometers
+=====================
+Bandwidth Statistics Summary
+Explanatory Variables	Optimal Distance Bandwidth	Effective Number of Parameters	Adjusted Value of Alpha	Adjusted Critical Value of Pseudo-t Statistics
+Intercept	1.96	13.38	0.0037	2.9018
+start station id	1.96	15.19	0.0033	2.9414
+covid_cases	3.08	4.33	0.0116	2.5270
+tripduration_sum(mins)	1.96	9.83	0.0051	2.8034
+tripduration_mean(mins)	2.67	6.07	0.0082	2.6437
+usertype_member_count	1.96	9.73	0.0051	2.8003
+Distance Unit: kilometers

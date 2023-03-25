@@ -1,0 +1,87 @@
+Multiscale Geographically Weighted Regression (MGWR)
+=====================
+Parameters
+
+Input Features     df_bst_GWR_XYTableToPoint1
+Dependent Variable     trip_count
+Model Type     CONTINUOUS
+Explanatory Variables     start_station_id;covid_cases;tripduration_sum_mins_;tripduration_mean_mins_;usertype_member_count
+Output Features     D:\Desktop\bst_MGWR\BST_MGWR.shp
+Neighborhood Type     DISTANCE_BAND
+Neighborhood Selection Method     GOLDEN_SEARCH
+Minimum Number of Neighbors     
+Maximum Number of Neighbors     
+Distance Unit     KILOMETERS
+Minimum Search Distance     
+Maximum Search Distance     
+Number of Neighbors Increment     
+Search Distance Increment     
+Number of Increments     
+Number of Neighbors     
+Distance Band     
+Number of Neighbors for Golden Search     
+Number of Neighbors for Manual Intervals     
+User Defined Number of Neighbors     
+Search Distance for Golden Search     start_station_id # #;covid_cases # #;tripduration_sum_mins_ # #;tripduration_mean_mins_ # #;usertype_member_count # #
+Search Distance for Manual Intervals     
+User Defined Search Distance     
+Prediction Locations     df_bst_GWR_XYTableToPoint1
+Explanatory Variables to Match     start_station_id 'start station id';covid_cases covid_cases;tripduration_sum_mins_ tripduration_sum(mins);tripduration_mean_mins_ tripduration_mean(mins);usertype_member_count usertype_member_count
+Output Predicted Features     D:\Desktop\bst_MGWR\predictions.shp
+Robust Prediction     ROBUST
+Local Weighting Scheme     GAUSSIAN
+Output Neighborhood Table     D:\Desktop\bst_MGWR\neighborhood table.dbf
+Coefficient Raster Workspace     
+Scale Data     SCALE_DATA
+Coefficient Raster Layers     
+Output Layer Group     BST_MGWR_Results
+=====================
+
+Summary Statistics for Coefficients Estimates
+Explanatory Variables	Mean	Standard Deviation	Minimum	Median	Maximum
+Intercept	0.0000	0.0002	-0.0004	0.0000	0.0017
+start station id	-0.0076	0.0000	-0.0078	-0.0076	-0.0074
+covid_cases	0.0120	0.0001	0.0118	0.0120	0.0122
+tripduration_sum(mins)	0.3669	0.0000	0.3668	0.3669	0.3669
+tripduration_mean(mins)	-0.0263	0.0000	-0.0265	-0.0263	-0.0261
+usertype_member_count	0.6503	0.0000	0.6503	0.6503	0.6503
+=====================
+Model Diagnostics
+Statistic	GWR	MGWR
+R-Squared	0.9983	0.9983
+Adjusted R-Squared	0.9982	0.9982
+AICc	-1645.9879	-1646.1656
+Sigma-Squared	0.0018	0.0018
+Sigma-Squared MLE	0.0017	0.0017
+Effective Degrees of Freedom	466.6068	466.8056
+Optimal GWR Bandwidth: 32.15 kilometers (Distance).
+=====================
+Summary of Explanatory Variables and Neighborhoods
+Explanatory Variables	Bandwidth (% of Extent)a	Significant (% of Features)b
+Intercept	29.40 (57.63)	0 (0.00)
+start station id	39.35 (77.15)	473 (100.00)
+covid_cases	39.35 (77.15)	473 (100.00)
+tripduration_sum(mins)	51.01 (100.00)	473 (100.00)
+tripduration_mean(mins)	39.35 (77.15)	473 (100.00)
+usertype_member_count	51.01 (100.00)	473 (100.00)
+Distance Unit: kilometers
+a: This number in the parenthesis ranges from 0 to 100%, and can be interpreted as a local, regional, global scale based on the geographical context from low to high.
+b: In the parentheses, the percentage of features that have significant coefficients of an explanatory variable.
+=====================
+Optimal Bandwidths Search History
+Iterations	Intercept	start station id	covid_cases	tripduration_sum(mins)	tripduration_mean(mins)	usertype_member_count	AICc
+0	32.15	32.15	32.15	32.15	32.15	32.15	-1645.9879
+1	32.15	32.15	39.35	51.01	39.35	51.01	-1646.1112
+2	29.40	39.35	39.35	51.01	39.35	51.01	-1646.1656
+Distance Unit: kilometers
+=====================
+Bandwidth Statistics Summary
+Explanatory Variables	Optimal Distance Bandwidth	Effective Number of Parameters	Adjusted Value of Alpha	Adjusted Critical Value of Pseudo-t Statistics
+Intercept	29.40	1.06	0.0472	1.9896
+start station id	39.35	1.03	0.0484	1.9788
+covid_cases	39.35	1.04	0.0480	1.9828
+tripduration_sum(mins)	51.01	1.01	0.0496	1.9689
+tripduration_mean(mins)	39.35	1.04	0.0479	1.9838
+usertype_member_count	51.01	1.01	0.0496	1.9682
+Distance Unit: kilometers
+Elapsed Time: 15.65 seconds
