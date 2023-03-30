@@ -49,6 +49,12 @@ Overall, spatial and temporal analysis methods have provided valuable insights i
 
 This project aims to explore the spatial and temporal relationship between shared bike data and COVID-19 cases in NYC and Boston during 2019-2022. By employing a combination of spatial and temporal analysis methods, including GIS and time-series models, a better understanding of the relationship would be gained between these variables and inform policy decisions related to transportation and public health in urban areas.
 
+![reort pics_00](/Users/zonghe/Desktop/reort%20pics/reort%20pics_00.png)!](/Users/zonghe/Desktop/reort%20pics/reort%20pics_00.png)
+
+
+
+![reort pics_01](/Users/zonghe/Desktop/reort%20pics/reort%20pics_01.png)!](/Users/zonghe/Desktop/reort%20pics/reort%20pics_01.png)
+
 
 
 ## Exploratory spatio-temporal data analysis
